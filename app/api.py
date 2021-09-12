@@ -1,5 +1,4 @@
 import os
-import configparser
 from http import HTTPStatus
 from flask import request, redirect
 from flask_restful import Resource
@@ -7,9 +6,7 @@ from flask_restful import Resource
 from app.db import add_url, get_url
 
 
-config = configparser.ConfigParser()
-config.read(os.path.abspath(os.path.join(".ini")))
-BASE_URL = config['PROD']['BASE_URL']
+BASE_URL = os.environ.get('BASE_URL')
 
 
 class URLShortener(Resource):
