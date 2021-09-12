@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
-from app.api import URLShortener, URLRedirect
+from src.api import URLShortener, URLRedirect
 
 
 def create_app():

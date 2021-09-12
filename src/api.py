@@ -3,7 +3,7 @@ from http import HTTPStatus
 from flask import request, redirect
 from flask_restful import Resource
 
-from app.db import add_url, get_url
+from src.db import add_url, get_url
 
 
 BASE_URL = os.environ.get('BASE_URL')
