@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from http import HTTPStatus
 from flask import request, redirect
