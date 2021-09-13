@@ -2,32 +2,51 @@ import os
 from http import HTTPStatus
 from flask import request, redirect
 from flask_restful import Resource
-
-from src.db import add_url, get_url
-
+from src.db import add_url, get_document_by_id, get_document_by_url
+from src.check_regex import check_url_valid
 
 BASE_URL = os.environ.get('BASE_URL')
 
 
 class URLShortener(Resource):
     def post(self):
-        data = request.get_json()
-        url = data.get('url', None)
-        if url is None or url == "":
-            return "URL not given.", HTTPStatus.BAD_REQUEST
+        try:
+            data = request.get_json()
+            url = data.get('url', None)
+            # check validity of url
+            if url is None or url == "":
+                return "URL not given.", HTTPStatus.BAD_REQUEST
+            if not url.startswith(('http://', 'https://')):
+                url = 'http://' + url
+            if not check_url_valid(url):
+                return "URL is not valid.", HTTPStatus.BAD_REQUEST
 
-        db_data = add_url(url)
-        id = db_data.inserted_id
-        return BASE_URL + str(id)
+            # check if url exists in db
+            is_retrieved, data = get_document_by_url(url)
+            if not is_retrieved:
+                return data, HTTPStatus.INTERNAL_SERVER_ERROR
+            if data:
+                return {"url": BASE_URL + data['_id']}, HTTPStatus.OK
+
+            # add url if not exists
+            is_retrieved, data = add_url(url)
+            if not is_retrieved:
+                return data, HTTPStatus.INTERNAL_SERVER_ERROR
+            return {"url": BASE_URL + data['_id']}, HTTPStatus.OK
+        except Exception as e:
+            return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
 
 class URLRedirect(Resource):
     def get(self, id):
-        data = get_url(id)
-        if data:
-            url = data['url']
-            if not url.startswith(('http://', 'https://')):
-                url = 'http://' + url
-            return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT)
-        else:
-            return "URL not found.", HTTPStatus.BAD_REQUEST
+        try:
+            is_retrieved, data = get_document_by_id(id)
+            if not is_retrieved:
+                return data, HTTPStatus.INTERNAL_SERVER_ERROR
+            if data:
+                url = data['url']
+                return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT)
+            else:
+                return "URL not found.", HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR

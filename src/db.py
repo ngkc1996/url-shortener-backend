@@ -19,10 +19,41 @@ db = LocalProxy(get_db)
 
 
 def add_url(url):
-    uuid = shortuuid.uuid()
-    data = {'_id': uuid, 'url': url}
-    return db.urls.insert_one(data)
+    """
+    Returns:
+        bool: did the function execute as expected
+        str: corresponding id
+    """
+    try:
+        uuid = shortuuid.uuid()
+        data = {'_id': uuid, 'url': url}
+        db.urls.insert_one(data)
+        return True, data
+    except Exception as e:
+        return False, {"message": str(e)}
 
 
-def get_url(id):
-    return db.urls.find_one({'_id': id})
+def get_document_by_id(id):
+    """
+    Returns:
+        bool: did the function execute as expected
+        dict: corresponding dictionary
+    """
+    try:
+        data = db.urls.find_one({'_id': id})
+        return True, data
+    except Exception as e:
+        return False, {"message": str(e)}
+
+
+def get_document_by_url(url):
+    """
+    Returns:
+        bool: did the function execute as expected
+        dict: corresponding dictionary
+    """
+    try:
+        data = db.urls.find_one({'url': url})
+        return True, data
+    except Exception as e:
+        return False, {"message": str(e)}
