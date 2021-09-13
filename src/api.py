@@ -27,13 +27,13 @@ class URLShortener(Resource):
             if not is_retrieved:
                 return data, HTTPStatus.INTERNAL_SERVER_ERROR
             if data:
-                return {"url": BASE_URL + data['_id']}, HTTPStatus.OK
+                return {"url": BASE_URL + data['_id']}, HTTPStatus.CREATED
 
             # add url if not exists
             is_retrieved, data = add_url(url)
             if not is_retrieved:
                 return data, HTTPStatus.INTERNAL_SERVER_ERROR
-            return {"url": BASE_URL + data['_id']}, HTTPStatus.OK
+            return {"url": BASE_URL + data['_id']}, HTTPStatus.CREATED
         except Exception as e:
             return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
 
@@ -46,7 +46,7 @@ class URLRedirect(Resource):
                 return data, HTTPStatus.INTERNAL_SERVER_ERROR
             if data:
                 url = data['url']
-                return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT)
+                return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT), HTTPStatus.PERMANENT_REDIRECT
             else:
                 return {"message": "URL not found."}, HTTPStatus.BAD_REQUEST
         except Exception as e:
