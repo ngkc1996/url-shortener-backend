@@ -2,6 +2,7 @@ import os
 from http import HTTPStatus
 from flask import request, redirect
 from flask_restful import Resource
+
 from src.db import add_url, get_document_by_id, get_document_by_url
 from src.check_regex import check_url_valid
 
@@ -15,11 +16,11 @@ class URLShortener(Resource):
             url = data.get('url', None)
             # check validity of url
             if url is None or url == "":
-                return "URL not given.", HTTPStatus.BAD_REQUEST
+                return {"message": "URL not given."}, HTTPStatus.BAD_REQUEST
             if not url.startswith(('http://', 'https://')):
                 url = 'http://' + url
             if not check_url_valid(url):
-                return "URL is not valid.", HTTPStatus.BAD_REQUEST
+                return {"message": "URL is not valid."}, HTTPStatus.BAD_REQUEST
 
             # check if url exists in db
             is_retrieved, data = get_document_by_url(url)
@@ -47,6 +48,6 @@ class URLRedirect(Resource):
                 url = data['url']
                 return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT)
             else:
-                return "URL not found.", HTTPStatus.BAD_REQUEST
+                return {"message": "URL not found."}, HTTPStatus.BAD_REQUEST
         except Exception as e:
             return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
