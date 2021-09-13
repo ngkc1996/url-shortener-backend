@@ -46,7 +46,7 @@ class URLRedirect(Resource):
                 return data, HTTPStatus.INTERNAL_SERVER_ERROR
             if data:
                 url = data['url']
-                return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT), HTTPStatus.PERMANENT_REDIRECT
+                return redirect(url, code=HTTPStatus.PERMANENT_REDIRECT)
             else:
                 return {"message": "URL not found."}, HTTPStatus.BAD_REQUEST
         except Exception as e:
