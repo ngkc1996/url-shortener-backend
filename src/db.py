@@ -26,7 +26,7 @@ def add_url(url):
     """
     try:
         uuid = shortuuid.uuid()
-        data = {'_id': uuid, 'url': url}
+        data = {"_id": uuid, "url": url}
         db.urls.insert_one(data)
         return True, data
     except Exception as e:
@@ -40,7 +40,7 @@ def get_document_by_id(id):
         dict: corresponding dictionary
     """
     try:
-        data = db.urls.find_one({'_id': id})
+        data = db.urls.find_one({"_id": id})
         return True, data
     except Exception as e:
         return False, {"message": str(e)}
@@ -53,7 +53,7 @@ def get_document_by_url(url):
         dict: corresponding dictionary
     """
     try:
-        data = db.urls.find_one({'url': url})
+        data = db.urls.find_one({"url": url})
         return True, data
     except Exception as e:
         return False, {"message": str(e)}
