@@ -25,6 +25,11 @@ This [link](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python
 - Install libraries: `pip install -r requirements.txt`
 - Run `app.py` in project folder, with the environment variables.
 
+## Database Setup
+- Setting up the MongoDB cluster is pretty straightforward.
+- To get the connection string (`DB_URI`), in your cluster, navigate to _Connect_, and choose _Connect your application_. Select _Python_ as the driver and the code example will appear.
+
+
 ## Environment Variables
 
 | Variable                    | Description                                                                                                                    |
