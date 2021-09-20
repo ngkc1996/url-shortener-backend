@@ -51,8 +51,3 @@ class URLRedirect(Resource):
                 return {"message": "URL not found."}, HTTPStatus.BAD_REQUEST
         except Exception as e:
             return {"message": str(e)}, HTTPStatus.INTERNAL_SERVER_ERROR
-
-
-class TestDeploy(Resource):
-    def get(self):
-        return {"message": "Hello World!"}

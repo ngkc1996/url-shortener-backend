@@ -12,7 +12,6 @@ CORS(app)
 
 app.config["MONGO_URI"] = os.environ.get("DB_URI")
 
-api.add_resource(TestDeploy, "/test")
 api.add_resource(URLRedirect, "/<id>")
 api.add_resource(URLShortener, "/")
 
