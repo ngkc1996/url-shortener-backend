@@ -18,7 +18,7 @@ def get_db():
 db = LocalProxy(get_db)
 
 
-def add_url(url):
+def add_url(url, num_uses):
     """
     Returns:
         bool: did the function execute as expected
@@ -26,7 +26,7 @@ def add_url(url):
     """
     try:
         uuid = shortuuid.uuid()
-        data = {"_id": uuid, "url": url}
+        data = {"_id": uuid, "url": url, "num_uses": num_uses}
         db.urls.insert_one(data)
         return True, data
     except Exception as e:
@@ -42,6 +42,21 @@ def get_document_by_id(id):
     try:
         data = db.urls.find_one({"_id": id})
         return True, data
+    except Exception as e:
+        return False, {"message": str(e)}
+
+
+def decrement_document_by_id(id):
+    """
+    Returns:
+        bool: did the function execute as expected
+        dict: corresponding dictionary
+    """
+    try:
+        filter = {"_id": id}
+        new_values = {"$inc": { "num_uses": -1 }}
+        db.urls.update_one(filter, new_values)
+        return True, {}
     except Exception as e:
         return False, {"message": str(e)}
 
